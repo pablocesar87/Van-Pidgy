@@ -3,7 +3,7 @@
 from pygame import image
 from pygame.locals import *
 
-from scripts import inputbox #import the inputbox to change round number
+from scripts import inputbox  #import the inputbox to change round number
 from scripts.classes import * #import the game classes from script
 
 #first, declaration of dimensions and colors
@@ -47,7 +47,7 @@ def main():
     while True:
         pygame.mixer.music.stop()
         runGame()
-        showGameOverScreen(score, total_score,round_number)
+        showGameOverScreen(score, total_score, round_number=1)
 
     
 def terminate():
@@ -55,7 +55,7 @@ def terminate():
     pygame.quit()
     sys.exit()
 
-def runGame(number_of_vampires=5,vampire_velocity=1, velocity=3, total_score=0, round_number=1,remaining_shits=0):
+def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0, round_number=1,remaining_shits=0):
     #Velocity is actually the velocity of the pidgeon
     #The other variables explain themselves
     
@@ -85,15 +85,15 @@ def runGame(number_of_vampires=5,vampire_velocity=1, velocity=3, total_score=0, 
     ship_tension=pygame.image.load(path.join(img_dir, "ship_tension.png")).convert()
     bg_alien_planet=pygame.image.load(path.join(img_dir, "alien_planet.png")).convert()
     planet_tension=pygame.image.load(path.join(img_dir, "planet_tension.png")).convert()
-    bg_ship.set_colorkey((255,255,255))
-    ship_frame.set_colorkey((255,255,255))
-    tension.set_colorkey((255,255,255))
-    tram_tension.set_colorkey((255,255,255))
-    forest_frame.set_colorkey((255,255,255))
-    city_frame.set_colorkey((255,255,255))
-    ship_tension.set_colorkey((255,255,255))
-    bg_alien_planet.set_colorkey((255,255,255))
-    planet_tension.set_colorkey((255,255,255))
+    bg_ship.set_colorkey((255, 255, 255))
+    ship_frame.set_colorkey((255, 255, 255))
+    tension.set_colorkey((255, 255, 255))
+    tram_tension.set_colorkey((255, 255, 255))
+    forest_frame.set_colorkey((255, 255, 255))
+    city_frame.set_colorkey((255, 255, 255))
+    ship_tension.set_colorkey((255, 255, 255))
+    bg_alien_planet.set_colorkey((255, 255, 255))
+    planet_tension.set_colorkey((255, 255, 255))
     
     pidgeon_shot_sound=pygame.mixer.Sound(path.join(sound_folder, "pidgeon_shot.ogg"))
     vampire_dies=pygame.mixer.Sound(path.join(sound_folder, "vampire_dies.ogg"))
@@ -158,11 +158,11 @@ def runGame(number_of_vampires=5,vampire_velocity=1, velocity=3, total_score=0, 
             DISPLAYSURF.blit(bg_forest,[0,0])
             DISPLAYSURF.blit(tension,[0, 400])
             DISPLAYSURF.blit(forest_frame,[0,0])
-        elif 11<= round_number <=20:
+        elif 11 <= round_number <= 20:
             DISPLAYSURF.blit(bg_city,[0,0])
             DISPLAYSURF.blit(tram_tension,[0, 400])
             DISPLAYSURF.blit(city_frame,[0,0])
-        elif 21<=round_number <=30:
+        elif 21 <= round_number <= 30:
             DISPLAYSURF.blit(bg_ship,[0,0])
             DISPLAYSURF.blit(ship_tension,[0, 400])
             DISPLAYSURF.blit(ship_frame,[0,0])
@@ -170,12 +170,9 @@ def runGame(number_of_vampires=5,vampire_velocity=1, velocity=3, total_score=0, 
             DISPLAYSURF.blit(bg_alien_planet,[0,0])
             DISPLAYSURF.blit(planet_tension,[0, 400])
             DISPLAYSURF.blit(ship_frame,[0,0])
-            
-        
-        pidgeon.rect.x= pidgeon.rect.x + direction_x
-        pidgeon.rect.y= pidgeon.rect.y + direction_y
-        
-            
+
+        pidgeon.rect.x=pidgeon.rect.x + direction_x
+        pidgeon.rect.y=pidgeon.rect.y + direction_y
 
 #Pidgeon movement block and shit collisions           
             
@@ -363,7 +360,7 @@ def runGame(number_of_vampires=5,vampire_velocity=1, velocity=3, total_score=0, 
                     pygame.mixer.music.stop()
                     drone.kill()
                     pygame.time.delay(2000)
-                    showGameOverScreen(score, total_score,round_number) 
+                    showGameOverScreen(score, total_score, round_number)
                               
                 if drone.rect.x < -230 and drone_direction=="left":
                         drone.kill()
@@ -404,7 +401,7 @@ def runGame(number_of_vampires=5,vampire_velocity=1, velocity=3, total_score=0, 
             showGameOverScreen(score, total_score,round_number)
 
              
-        if number_of_shits < 0 and len(vampire_list)>0:
+        if number_of_shits<0 and len(vampire_list)>0:
             pygame.mixer.music.stop()
             no_shit_fart.play()
             pygame.time.wait(2000)
@@ -481,11 +478,7 @@ def windBlock(round_number, wind_direction, wind_sound, all_sprite_list):
                     wind.rect.x=-200
                     wind.rect.y=random.randint(0,100)-60
                     all_sprite_list.add(wind)
-                    
 
-    
-        
-                           
 #UFO movement block
 def ufoBlock(round_number, ufo_direction, ufo_sound, all_sprite_list, ufo_list):
     if 10<= round_number < 21:
@@ -602,7 +595,7 @@ def drawMoveToShot():
     scoreRect.topleft = (WINDOWWIDTH/2-170, 60)
     DISPLAYSURF.blit(scoreSurf, scoreRect)    
  
-def drawTotalScore(total_score,round_number):
+def drawTotalScore(total_score, round_number):
     if round_number <10 or round_number >20:
         scoreSurf = BASICFONT.render('Total Score: %s' % (total_score), True, BLACK)
         scoreRect = scoreSurf.get_rect()
