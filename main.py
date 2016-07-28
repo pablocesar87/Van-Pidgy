@@ -184,7 +184,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                 terminate()
             elif event.type == KEYDOWN:
                 if event.key == K_LEFT:
-                    if 5<=round_number<10 or 15<=round_number<=20:
+                    if 5<=round_number<10 or 15<=round_number<=20 or 36<=round_number<=40:
                         if wind_direction=="left":
                             direction_x = -velocity*2
                             direction_y=0
@@ -195,7 +195,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         direction_x = -velocity
                         direction_y=0 
                 if event.key == K_RIGHT:
-                    if 5 <= round_number < 10 or 15 <= round_number <= 20:
+                    if 5 <= round_number < 10 or 15 <= round_number <= 20 or 36<=round_number<=40:
                         if wind_direction == "left":
                             direction_x = +velocity/2
                             direction_y = 0
@@ -232,7 +232,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         if number_of_shits>0:
                             pidgeon_shot_sound.play()
                         number_of_shits -= 1
-                        if 5<= round_number < 10 or 15<=round_number<=20:
+                        if 5<= round_number < 10 or 15<=round_number<=20 or 36<=round_number<=40:
                             if wind_direction=="left":
                                 shit=Shit(-3)
                             if wind_direction == "right":
@@ -453,10 +453,10 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 
 
 
-  
+
 #Wind movement block method  
 def windBlock(round_number, wind_direction, wind_sound, all_sprite_list):
-    if 5<= round_number < 10 or 15<=round_number<=20:
+    if 5<= round_number < 10 or 15<=round_number<=20 or 36<=round_number<=40:
             drawCautionWind()
             if wind_direction=="left":
                 wind_direction_left= pygame.image.load(path.join(img_dir, "wind_direction_left.png")).convert()
