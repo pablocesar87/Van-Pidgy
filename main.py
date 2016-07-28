@@ -6,11 +6,12 @@ from pygame.locals import *
 from scripts import inputbox  #import the inputbox to change round number
 from scripts.classes import * #import the game classes from script
 
+
 #first, declaration of dimensions and colors
 
 dimensions = [800,501]
-WINDOWWIDTH =800
-WINDOWHEIGHT=501
+WINDOWWIDTH = 800
+WINDOWHEIGHT = 501
 #             R    G    B
 WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
@@ -85,6 +86,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     ship_tension=pygame.image.load(path.join(img_dir, "ship_tension.png")).convert()
     bg_alien_planet=pygame.image.load(path.join(img_dir, "alien_planet.png")).convert()
     planet_tension=pygame.image.load(path.join(img_dir, "planet_tension.png")).convert()
+    alien_frame=pygame.image.load(path.join(img_dir, "alien_frame.png")).convert()
     bg_ship.set_colorkey((255, 255, 255))
     ship_frame.set_colorkey((255, 255, 255))
     tension.set_colorkey((255, 255, 255))
@@ -94,6 +96,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     ship_tension.set_colorkey((255, 255, 255))
     bg_alien_planet.set_colorkey((255, 255, 255))
     planet_tension.set_colorkey((255, 255, 255))
+    alien_frame.set_colorkey((255, 255, 255))
     
     pidgeon_shot_sound=pygame.mixer.Sound(path.join(sound_folder, "pidgeon_shot.ogg"))
     vampire_dies=pygame.mixer.Sound(path.join(sound_folder, "vampire_dies.ogg"))
@@ -169,7 +172,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
         else:
             DISPLAYSURF.blit(bg_alien_planet,[0,0])
             DISPLAYSURF.blit(planet_tension,[0, 400])
-            DISPLAYSURF.blit(ship_frame,[0,0])
+            DISPLAYSURF.blit(alien_frame,[0,0])
 
         pidgeon.rect.x=pidgeon.rect.x + direction_x
         pidgeon.rect.y=pidgeon.rect.y + direction_y
@@ -192,11 +195,11 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         direction_x = -velocity
                         direction_y=0 
                 if event.key == K_RIGHT:
-                    if 5<=round_number<10 or 15<=round_number<=20:
-                        if wind_direction=="left":
+                    if 5 <= round_number < 10 or 15 <= round_number <= 20:
+                        if wind_direction == "left":
                             direction_x = +velocity/2
-                            direction_y=0
-                        if wind_direction=="right":
+                            direction_y = 0
+                        if wind_direction == "right":
                             direction_x = +velocity*2
                             direction_y=0
                     else:
@@ -209,7 +212,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                     direction_y = +velocity
                     direction_x=0
                 if event.key == K_RETURN:
-                    #Para meter a que nivel quiero ir
+                    #Allow to change level
                     go_to= int(inputbox.ask(DISPLAYSURF, 'Level'))
                     if 0< go_to < 11:
                         runGame(go_to*5, go_to*0.3, go_to*0.5, total_score, go_to, go_to*2)
@@ -436,7 +439,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 #All the draw methods and the flip 
 
         all_sprite_list.update() 
-        drawAmountShit(number_of_shits)                
+        drawAmountShit(number_of_shits, round_number)
         drawScore(score,round_number)
         drawPauseMainGame()
         
@@ -607,8 +610,11 @@ def drawTotalScore(total_score, round_number):
         scoreRect.topleft = (WINDOWWIDTH - 780, 35)
         DISPLAYSURF.blit(scoreSurf, scoreRect)
 
-def drawAmountShit(number_of_shits):
-    scoreSurf = BASICFONT.render('Shits: %s' % (number_of_shits), True, DARKGREEN)
+def drawAmountShit(number_of_shits, round_number):
+    if round_number < 31:
+        scoreSurf = BASICFONT.render('Shits: %s' % (number_of_shits), True, DARKGREEN)
+    else:
+        scoreSurf = BASICFONT.render('Shits: %s' % (number_of_shits), True, DARKGRAY)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH - 120, 50)
     DISPLAYSURF.blit(scoreSurf, scoreRect) 
