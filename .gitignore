@@ -1,4 +1,5 @@
 *.pyc
 'Keyboard inputs.txt'
-'.idea'
+".idea" 
 '.idea' 
+.idea 
