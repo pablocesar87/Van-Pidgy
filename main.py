@@ -457,16 +457,22 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                 velocity += 0.2         
 
             showWinScreen(score, total_score)
-            while True:
-                if checkForKeyPress():
-                    pygame.event.get()  # clear event queue
-                    DISPLAYSURF.blit(map_images_list[round_number - 1], [0, 0])
-                    drawPressKeyMsg()
-                    pygame.display.flip()
-                    while True:
-                        if checkForKeyPress():
-                            pygame.event.get()
-                            runGame(number_of_vampires, vampire_velocity, velocity, total_score, round_number,remaining_shits)
+            if len(map_images_list)>round_number:
+                while True:
+                    if checkForKeyPress():
+                        pygame.event.get()  # clear event queue
+                        DISPLAYSURF.blit(map_images_list[round_number - 1], [0, 0])
+                        drawPressKeyMsg()
+                        pygame.display.flip()
+                        while True:
+                            if checkForKeyPress():
+                                pygame.event.get()
+                                runGame(number_of_vampires, vampire_velocity, velocity, total_score, round_number,remaining_shits)
+            else:
+                while True:
+                    if checkForKeyPress():
+                        pygame.event.get()
+                        runGame(number_of_vampires, vampire_velocity, velocity, total_score, round_number,remaining_shits)
                     
 #----------------------------------------------------------------------------                    
 
