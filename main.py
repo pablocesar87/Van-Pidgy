@@ -87,6 +87,10 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     bg_alien_planet=pygame.image.load(path.join(img_dir, "alien_planet.png")).convert()
     planet_tension=pygame.image.load(path.join(img_dir, "planet_tension.png")).convert()
     alien_frame=pygame.image.load(path.join(img_dir, "alien_frame.png")).convert()
+    wind_direction_left = pygame.image.load(path.join(img_dir, "wind_direction_left.png")).convert()
+    wind_direction_right = pygame.image.load(path.join(img_dir, "wind_direction_right.png")).convert()
+    wind_direction_left.set_colorkey((255, 255, 255))
+    wind_direction_right.set_colorkey((255, 255, 255))
     bg_ship.set_colorkey((255, 255, 255))
     ship_frame.set_colorkey((255, 255, 255))
     tension.set_colorkey((255, 255, 255))
@@ -97,7 +101,25 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     bg_alien_planet.set_colorkey((255, 255, 255))
     planet_tension.set_colorkey((255, 255, 255))
     alien_frame.set_colorkey((255, 255, 255))
-    
+
+    map_images_list=[]
+    map_list= [
+        'forest_map1.png',
+        'forest_map2.png',
+        'forest_map3.png',
+        'forest_map4.png',
+        'forest_map5.png',
+        'forest_map6.png',
+        'forest_map7.png',
+        'forest_map8.png',
+        'forest_map9.png',
+        'forest_map10.png'
+
+    ]
+    for image in map_list:
+        map_images_list.append(pygame.image.load(path.join(img_dir, image)).convert())
+
+
     pidgeon_shot_sound=pygame.mixer.Sound(path.join(sound_folder, "pidgeon_shot.ogg"))
     vampire_dies=pygame.mixer.Sound(path.join(sound_folder, "vampire_dies.ogg"))
     electrocute=pygame.mixer.Sound(path.join(sound_folder, "electrocute.ogg"))
@@ -112,6 +134,13 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     drone_sound=pygame.mixer.Sound(path.join(sound_folder, "drone.ogg"))
     #------------------------------------------------------------------------
     
+    if round_number==1:
+        while True:
+            DISPLAYSURF.blit(map_images_list[round_number - 1], [0, 0])
+            drawPressKeyMsg()
+            pygame.display.flip()
+            if checkForKeyPress():
+                break
 
    
     
@@ -152,10 +181,10 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     #Music of the game    
     pygame.mixer.music.load(path.join(sound_folder, "main_game.ogg"))
     pygame.mixer.music.play(loops=100)
-    
+
     while True:
     #Main event loop
-        
+
         #Which background and pidgeon is declared
         if round_number <= 10:  
             DISPLAYSURF.blit(bg_forest,[0,0])
@@ -188,37 +217,37 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         if wind_direction=="left":
                             direction_x = -velocity*2
                             direction_y=0
-                        if wind_direction=="right":
+                        elif wind_direction=="right":
                             direction_x = -velocity/2
                             direction_y=0
                     else:
                         direction_x = -velocity
                         direction_y=0 
-                if event.key == K_RIGHT:
+                elif event.key == K_RIGHT:
                     if 5 <= round_number < 10 or 15 <= round_number <= 20 or 36<=round_number<=40:
                         if wind_direction == "left":
                             direction_x = +velocity/2
                             direction_y = 0
-                        if wind_direction == "right":
+                        elif wind_direction == "right":
                             direction_x = +velocity*2
                             direction_y=0
                     else:
                         direction_x = +velocity
                         direction_y=0      
-                if event.key == K_UP:
+                elif event.key == K_UP:
                     direction_y = -velocity
                     direction_x=0
-                if event.key == K_DOWN:
+                elif event.key == K_DOWN:
                     direction_y = +velocity
                     direction_x=0
-                if event.key == K_RETURN:
+                elif event.key == K_RETURN:
                     #Allow to change level
                     go_to= int(inputbox.ask(DISPLAYSURF, 'Level'))
                     if 0< go_to < 11:
                         runGame(go_to*5, go_to*0.3, go_to*0.5, total_score, go_to, go_to*2)
-                    if 11<= go_to < 25:
+                    elif 11<= go_to < 25:
                         runGame(go_to*4, go_to*0.15, go_to*0.3, total_score, go_to, go_to*2)
-                    if 25<= go_to:
+                    elif 25<= go_to:
                         runGame(go_to*3, go_to*0.1, go_to*0.2, total_score, go_to, go_to*2)
                     else:
                         continue   
@@ -235,7 +264,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         if 5<= round_number < 10 or 15<=round_number<=20 or 36<=round_number<=40:
                             if wind_direction=="left":
                                 shit=Shit(-3)
-                            if wind_direction == "right":
+                            elif wind_direction == "right":
                                 shit=Shit(3)
                         else:
                             shit=Shit(0)
@@ -244,7 +273,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         all_sprite_list.add(shit)
                         shit_list.add(shit)
                         
-                if event.key==K_p:
+                elif event.key==K_p:
                     #Pausing of the game
                     pause_sound.play()
                     while True:
@@ -258,7 +287,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                             break
                         if event.type==pygame.KEYDOWN and event.key==pygame.K_ESCAPE:
                             terminate()
-                if event.key == K_ESCAPE:
+                elif event.key == K_ESCAPE:
                     #terminating the game
                     terminate()
                     
@@ -323,7 +352,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                 bullet_list.remove(bullet)
                 pygame.time.delay(2000)
                 showGameOverScreen(score, total_score,round_number)
-            if bullet.rect.y<0:
+            elif bullet.rect.y<0:
                 all_sprite_list.remove(bullet)
                 bullet_list.remove(bullet)
         
@@ -333,7 +362,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 #--------------------------------------------------------------------------
                 
 #wind block         
-        windBlock(round_number, wind_direction, wind_sound, all_sprite_list)
+        windBlock(round_number, wind_direction, wind_sound, all_sprite_list, wind_direction_left, wind_direction_right)
         
 #ufo block
         ufo_direction=random.choice(["right", "left"])#Randomizing ufo direction
@@ -348,9 +377,9 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         pygame.time.delay(2000)
                         showGameOverScreen(score, total_score,round_number) 
                               
-                    if ufo.rect.x < -230 and ufo_direction=="left":
+                    elif ufo.rect.x < -230 and ufo_direction=="left":
                         ufo.kill()
-                    if ufo.rect.x > 850 and ufo_direction=="right":
+                    elif ufo.rect.x > 850 and ufo_direction=="right":
                         ufo.kill()
 #drone block
         drone_direction=random.choice(["right", "left"])#Randomizing ufo direction
@@ -365,9 +394,9 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                     pygame.time.delay(2000)
                     showGameOverScreen(score, total_score, round_number)
                               
-                if drone.rect.x < -230 and drone_direction=="left":
+                elif drone.rect.x < -230 and drone_direction=="left":
                         drone.kill()
-                if drone.rect.x > 850 and drone_direction=="right":
+                elif drone.rect.x > 850 and drone_direction=="right":
                         drone.kill()              
                             
 #----------------------------------------------------------------------------
@@ -378,25 +407,25 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
             #change the pidgeon image to electrocuted
             pidgeon.electrocute()
             
-        if pidgeon.rect.y ==0:
+        elif pidgeon.rect.y ==0:
             #change the pidgeon image to bumped in the head
             pidgeon.bumpHead()
-        if pidgeon.rect.x ==-15:
+        elif pidgeon.rect.x ==-15:
             #change the pidgeon image to bumped in the left
             pidgeon.bumpLeft()
             
-        if pidgeon.rect.x ==699:
+        elif pidgeon.rect.x ==699:
             #change the pidgeon image to bumped in the right
             pidgeon.bumpRight()
             
-        if pidgeon.rect.y >360:
+        elif pidgeon.rect.y >360:
             round_number=1
             pygame.mixer.music.stop()
             electrocute.play()
             pygame.time.delay(2000)
             showGameOverScreen(score, total_score,round_number)
       
-        if pidgeon.rect.y <0 or pidgeon.rect.x <-15 or pidgeon.rect.x > 700:
+        elif pidgeon.rect.y <0 or pidgeon.rect.x <-15 or pidgeon.rect.x > 700:
             round_number=1
             pygame.mixer.music.stop()
             pidgeon_bump.play()
@@ -404,7 +433,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
             showGameOverScreen(score, total_score,round_number)
 
              
-        if number_of_shits<0 and len(vampire_list)>0:
+        elif number_of_shits<0 and len(vampire_list)>0:
             pygame.mixer.music.stop()
             no_shit_fart.play()
             pygame.time.wait(2000)
@@ -418,11 +447,11 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                 number_of_vampires = number_of_vampires+7
                 vampire_velocity += 0.3
                 velocity += 0.5          
-            if 11< round_number < 25:
+            elif 11< round_number < 25:
                 number_of_vampires = number_of_vampires+5
                 vampire_velocity += 0.15
                 velocity += 0.3         
-            if 25< round_number:
+            elif 25< round_number:
                 number_of_vampires = number_of_vampires+3
                 vampire_velocity += 0.1
                 velocity += 0.2         
@@ -430,8 +459,14 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
             showWinScreen(score, total_score)
             while True:
                 if checkForKeyPress():
-                    pygame.event.get() # clear event queue
-                    runGame(number_of_vampires,vampire_velocity, velocity, total_score,round_number, remaining_shits)
+                    pygame.event.get()  # clear event queue
+                    DISPLAYSURF.blit(map_images_list[round_number - 1], [0, 0])
+                    drawPressKeyMsg()
+                    pygame.display.flip()
+                    while True:
+                        if checkForKeyPress():
+                            pygame.event.get()
+                            runGame(number_of_vampires, vampire_velocity, velocity, total_score, round_number,remaining_shits)
                     
 #----------------------------------------------------------------------------                    
 
@@ -455,12 +490,10 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 
 
 #Wind movement block method  
-def windBlock(round_number, wind_direction, wind_sound, all_sprite_list):
+def windBlock(round_number, wind_direction, wind_sound, all_sprite_list,wind_direction_left,wind_direction_right):
     if 5<= round_number < 10 or 15<=round_number<=20 or 36<=round_number<=40:
             drawCautionWind()
             if wind_direction=="left":
-                wind_direction_left= pygame.image.load(path.join(img_dir, "wind_direction_left.png")).convert()
-                wind_direction_left.set_colorkey((255,255,255))
                 DISPLAYSURF.blit(wind_direction_left, [0,0])
                 random_wind=random.randint(1, 100)
                 if random_wind==50:
@@ -469,10 +502,8 @@ def windBlock(round_number, wind_direction, wind_sound, all_sprite_list):
                     wind.rect.x=700
                     wind.rect.y=random.randint(0,100)
                     all_sprite_list.add(wind)               
-            if wind_direction == "right":
-                wind_direction_left= pygame.image.load(path.join(img_dir, "wind_direction_right.png")).convert()
-                wind_direction_left.set_colorkey((255,255,255))
-                DISPLAYSURF.blit(wind_direction_left, [0,0])
+            elif wind_direction == "right":
+                DISPLAYSURF.blit(wind_direction_right, [0,0])
                 random_wind=random.randint(1,100)
                 if random_wind==50:
                     wind_sound.play()
@@ -497,7 +528,7 @@ def ufoBlock(round_number, ufo_direction, ufo_sound, all_sprite_list, ufo_list):
                     all_sprite_list.add(ufo)
                     ufo_list.add(ufo)
             
-            if ufo_direction == "right"and len(ufo_list)<1:
+            elif ufo_direction == "right"and len(ufo_list)<1:
                 random_ufo=random.randint(1,50)
                 if random_ufo==15:
                     ufo_sound.play()
@@ -523,7 +554,7 @@ def droneBlock(round_number, drone_direction, drone_sound, all_sprite_list, dron
                     all_sprite_list.add(drone)
                     drone_list.add(drone)
             
-            if drone_direction == "right"and len(drone_list)<1:
+            elif drone_direction == "right"and len(drone_list)<1:
                 random_drone=random.randint(1,50)
                 if random_drone==15:
                     drone_sound.play()
@@ -674,12 +705,19 @@ def showWinScreen(score, total_score):
     
        
 def showStartScreen():
+
     title=pygame.image.load(path.join(img_dir,"title.png")).convert()
-    DISPLAYSURF.blit(title,[0,0])
+    title.set_alpha(None)
+
+    for x in range(255):
+        title.set_alpha(x)
+        DISPLAYSURF.blit(title,[0,0])
+        pygame.display.flip()
+        #pygame.time.delay(20)
     while True:
         drawPressKeyMsg()
         drawTutorialKey2()
-        drawTutorialKey()  
+        drawTutorialKey()
         if checkForKeyPress():
             pygame.event.get() # clear event queue
             return
