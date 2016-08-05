@@ -133,7 +133,17 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
         'ship_map27.png',
         'ship_map28.png',
         'ship_map29.png',
-        'ship_map30.png'
+        'ship_map30.png',
+        'alien_map31.png',
+        'alien_map32.png',
+        'alien_map33.png',
+        'alien_map34.png',
+        'alien_map35.png',
+        'alien_map36.png',
+        'alien_map37.png',
+        'alien_map38.png',
+        'alien_map39.png',
+        'alien_map40.png'
 
 
     ]
