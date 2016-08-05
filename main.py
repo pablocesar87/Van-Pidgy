@@ -124,6 +124,17 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
         'city_map18.png',
         'city_map19.png',
         'city_map20.png',
+        'ship_map21.png',
+        'ship_map22.png',
+        'ship_map23.png',
+        'ship_map24.png',
+        'ship_map25.png',
+        'ship_map26.png',
+        'ship_map27.png',
+        'ship_map28.png',
+        'ship_map29.png',
+        'ship_map30.png'
+
 
     ]
     for image in map_list:
