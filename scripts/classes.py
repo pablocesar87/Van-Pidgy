@@ -41,7 +41,7 @@ class Vampire_boss(pygame.sprite.Sprite):
         self.image.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect()
         self.shoting_number = random.randint(1, 60)
-        self.life=1
+        self.life=10
     def get_shoting_number(self):
         return self.shoting_number
     def shooted(self):
