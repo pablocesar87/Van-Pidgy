@@ -31,7 +31,23 @@ class Vampire_gun(pygame.sprite.Sprite):
         return self.points
     def get_shoting_number(self):
         return self.shoting_number
-        
+
+class Vampire_boss(pygame.sprite.Sprite):
+    #this class is the final boss
+    def __init__(self, vampire_direction):
+        pygame.sprite.Sprite.__init__(self)
+        self.vampire_direction = vampire_direction
+        self.image = pygame.image.load(path.join(img_dir, "tentacula.png")).convert()
+        self.image.set_colorkey((255, 255, 255))
+        self.rect = self.image.get_rect()
+        self.shoting_number = random.randint(1, 60)
+        self.life=1
+    def get_shoting_number(self):
+        return self.shoting_number
+    def shooted(self):
+        self.life -=1
+    def get_life(self):
+        return self.life
         
 class Soul(pygame.sprite.Sprite):
     def __init__(self):
@@ -56,6 +72,15 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image=pygame.image.load(path.join(img_dir, "bullet.png")).convert()
         self.image.set_colorkey((255,255,255))
+        self.rect = self.image.get_rect()
+    def update(self):
+        self.rect.y -= 3
+
+class Bullet_boss(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(path.join(img_dir, "energy_ball.png")).convert()
+        self.image.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect()
     def update(self):
         self.rect.y -= 3

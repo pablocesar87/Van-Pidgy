@@ -89,6 +89,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     alien_frame=pygame.image.load(path.join(img_dir, "alien_frame.png")).convert()
     wind_direction_left = pygame.image.load(path.join(img_dir, "wind_direction_left.png")).convert()
     wind_direction_right = pygame.image.load(path.join(img_dir, "wind_direction_right.png")).convert()
+
     wind_direction_left.set_colorkey((255, 255, 255))
     wind_direction_right.set_colorkey((255, 255, 255))
     bg_ship.set_colorkey((255, 255, 255))
@@ -163,6 +164,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     death_shot=pygame.mixer.Sound(path.join(sound_folder, "death_shot.ogg"))
     shot=pygame.mixer.Sound(path.join(sound_folder, "shot.ogg"))
     drone_sound=pygame.mixer.Sound(path.join(sound_folder, "drone.ogg"))
+    energy_ball=pygame.mixer.Sound(path.join(sound_folder, "energy_ball.ogg"))
     #------------------------------------------------------------------------
     
     if round_number==1:
@@ -193,21 +195,30 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 #Generation of the vampires----------------------------------------
 
 
-    for i in range(number_of_vampires):
-        if round_number>20 and i%2==0:
-            vampire_gun=Vampire_gun(random.choice([1,-1]))
-            vampire_gun.rect.x=random.randint(40, 750)
-            vampire_gun.rect.y=430
-            vampire_list.add(vampire_gun)
-            all_sprite_list.add(vampire_gun)    
-        else:
-            vampire=Vampire(random.choice([1,-1]))
-            vampire.rect.x=random.randint(40, 750)
-            vampire.rect.y=430
-            vampire_list.add(vampire)
-            all_sprite_list.add(vampire)
+    if round_number < 41:
+        for i in range(number_of_vampires):
+            if round_number>20 and i%2==0:
+                vampire_gun=Vampire_gun(random.choice([1,-1]))
+                vampire_gun.rect.x=random.randint(40, 750)
+                vampire_gun.rect.y=430
+                vampire_list.add(vampire_gun)
+                all_sprite_list.add(vampire_gun)
+            else:
+                vampire=Vampire(random.choice([1,-1]))
+                vampire.rect.x=random.randint(40, 750)
+                vampire.rect.y=430
+                vampire_list.add(vampire)
+                all_sprite_list.add(vampire)
+    elif round_number == 41:
+        vampire_boss=Vampire_boss(1)
+        vampire_boss.rect.x = random.randint(0, 750)
+        vampire_boss.rect.y = 400
+        vampire_list.add(vampire_boss)
+        all_sprite_list.add(vampire_boss)
 
-    #------------------------------------------------------------------
+
+
+        #------------------------------------------------------------------
         
     #Music of the game    
     pygame.mixer.music.load(path.join(sound_folder, "main_game.ogg"))
@@ -237,6 +248,11 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
         pidgeon.rect.x=pidgeon.rect.x + direction_x
         pidgeon.rect.y=pidgeon.rect.y + direction_y
 
+        if round_number ==41:
+            boss_life = pygame.image.load(path.join(img_dir, "boss_life%s.png" % (str(vampire_boss.get_life())))).convert()
+            boss_life.set_colorkey((255, 255, 255))
+            DISPLAYSURF.blit(boss_life, [180, 90])
+
 #Pidgeon movement block and shit collisions           
             
         for event in pygame.event.get():
@@ -244,7 +260,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                 terminate()
             elif event.type == KEYDOWN:
                 if event.key == K_LEFT:
-                    if 5<=round_number<10 or 15<=round_number<=20 or 36<=round_number<=40:
+                    if 5 <= round_number <= 10 or 15<= round_number <= 20 or 36 <= round_number <= 40 or round_number == 41:
                         if wind_direction=="left":
                             direction_x = -velocity*2
                             direction_y=0
@@ -255,7 +271,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         direction_x = -velocity
                         direction_y=0 
                 elif event.key == K_RIGHT:
-                    if 5 <= round_number < 10 or 15 <= round_number <= 20 or 36<=round_number<=40:
+                    if 5 <= round_number <= 10 or 15 <= round_number <= 20 or 36<=round_number<=40 or round_number == 41:
                         if wind_direction == "left":
                             direction_x = +velocity/2
                             direction_y = 0
@@ -292,7 +308,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                         if number_of_shits>0:
                             pidgeon_shot_sound.play()
                         number_of_shits -= 1
-                        if 5<= round_number < 10 or 15<=round_number<=20 or 36<=round_number<=40:
+                        if 5<= round_number <= 10 or 15<=round_number<=20 or 36<=round_number<=40 or round_number == 41:
                             if wind_direction=="left":
                                 shit=Shit(-3)
                             elif wind_direction == "right":
@@ -323,25 +339,35 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                     terminate()
                     
         for shit in shit_list:
-            shitted_vampires=pygame.sprite.spritecollide(shit, vampire_list, True)
-            for vampire in shitted_vampires:
-                if vampire.get_points()==50:
-                    soul=Soul()
-                    soul.rect.x=vampire.rect.x
-                    soul.rect.y=vampire.rect.y
-                    all_sprite_list.add(soul)
-                    soul_list.add(soul)
-                elif vampire.get_points()==150:
-                    soul_gun=Soul_gun()
-                    soul_gun.rect.x=vampire.rect.x
-                    soul_gun.rect.y=vampire.rect.y
-                    all_sprite_list.add(soul_gun)
-                    soul_list.add(soul_gun)
-                vampire_dies.play()
-                shit_list.remove(shit)
-                all_sprite_list.remove(shit)
-                score += vampire.get_points()
-                
+            if round_number < 41:
+                shitted_vampires=pygame.sprite.spritecollide(shit, vampire_list, True)
+                for vampire in shitted_vampires:
+                    if round_number <41:
+                        if vampire.get_points()==50:
+                            soul=Soul()
+                            soul.rect.x=vampire.rect.x
+                            soul.rect.y=vampire.rect.y
+                            all_sprite_list.add(soul)
+                            soul_list.add(soul)
+                        elif vampire.get_points()==150:
+                            soul_gun=Soul_gun()
+                            soul_gun.rect.x=vampire.rect.x
+                            soul_gun.rect.y=vampire.rect.y
+                            all_sprite_list.add(soul_gun)
+                            soul_list.add(soul_gun)
+                        vampire_dies.play()
+                        shit_list.remove(shit)
+                        all_sprite_list.remove(shit)
+                        score += vampire.get_points()
+            elif round_number == 41:
+                if pygame.sprite.collide_rect(shit, vampire_boss):
+                    vampire_boss.shooted()
+                    vampire_dies.play()
+                    shit_list.remove(shit)
+                    all_sprite_list.remove(shit)
+                    if vampire_boss.get_life()==0:
+                        drone.kill()
+                        direction_y, direction_x=0, 0
             if shit.rect.y > 500:
                 shit_list.remove(shit)
                 all_sprite_list.remove(shit)
@@ -357,24 +383,42 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                    
         for moving_vampire in vampire_list:
             moving_vampire.rect.x = moving_vampire.rect.x + vampire_velocity*moving_vampire.vampire_direction
-            if moving_vampire.rect.x > 750:
-                moving_vampire.vampire_direction = -1
-            elif moving_vampire.rect.x < 40:
-                moving_vampire.vampire_direction = 1
+            if round_number != 41:
+                if moving_vampire.rect.x > 750:
+                    moving_vampire.vampire_direction = -1
+                elif moving_vampire.rect.x < 40:
+                    moving_vampire.vampire_direction = 1
+            else:
+                if moving_vampire.rect.x > 700:
+                    moving_vampire.vampire_direction = -1
+                elif moving_vampire.rect.x < 1:
+                    moving_vampire.vampire_direction = 1
                 
         
         for shoting_vampire in vampire_list:
-            if shoting_vampire.get_points()==150:
-                if shoting_vampire.get_shoting_number()==random.randint(1,2000):
-                    shot.play()
-                    bullet=Bullet()
-                    bullet.rect.x=shoting_vampire.rect.x
-                    bullet.rect.y=shoting_vampire.rect.y
+            if round_number < 41:
+                if shoting_vampire.get_points()==150:
+                    if shoting_vampire.get_shoting_number()==random.randint(1,2000):
+                        shot.play()
+                        bullet=Bullet()
+                        bullet.rect.x=shoting_vampire.rect.x
+                        bullet.rect.y=shoting_vampire.rect.y
+                        all_sprite_list.add(bullet)
+                        bullet_list.add(bullet)
+            else:
+                if vampire_boss.get_shoting_number() == random.randint(1, 300):
+                    energy_ball.play()
+                    bullet = Bullet_boss()
+                    bullet.rect.x = vampire_boss.rect.x+15
+                    bullet.rect.y = vampire_boss.rect.y
                     all_sprite_list.add(bullet)
                     bullet_list.add(bullet)
                
         for bullet in bullet_list:
-            targeted_shot=pygame.sprite.spritecollide(pidgeon, bullet_list, True,pygame.sprite.collide_rect_ratio(0.5))
+            if round_number != 41:
+                targeted_shot=pygame.sprite.spritecollide(pidgeon, bullet_list, True,pygame.sprite.collide_rect_ratio(0.5))
+            elif round_number ==41:
+                targeted_shot = pygame.sprite.spritecollide(pidgeon, bullet_list, True, pygame.sprite.collide_rect_ratio(0.34))
             if targeted_shot:
                 pidgeon.bumpHead()
                 death_shot.play()
@@ -514,6 +558,8 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
         drawAmountShit(number_of_shits, round_number)
         drawScore(score,round_number)
         drawPauseMainGame()
+        if round_number ==41:
+            BewareTentacula(round_number)
         
         drawRound(round_number)
         drawTotalScore(total_score,round_number)    
@@ -528,8 +574,8 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 
 #Wind movement block method  
 def windBlock(round_number, wind_direction, wind_sound, all_sprite_list,wind_direction_left,wind_direction_right):
-    if 5<= round_number < 10 or 15<=round_number<=20 or 36<=round_number<=40:
-            drawCautionWind()
+    if 5<= round_number <=10 or 15<=round_number<=20 or 36<=round_number<=40 or round_number == 41:
+            drawCautionWind(round_number)
             if wind_direction=="left":
                 DISPLAYSURF.blit(wind_direction_left, [0,0])
                 random_wind=random.randint(1, 100)
@@ -552,7 +598,7 @@ def windBlock(round_number, wind_direction, wind_sound, all_sprite_list,wind_dir
 
 #UFO movement block
 def ufoBlock(round_number, ufo_direction, ufo_sound, all_sprite_list, ufo_list):
-    if 10<= round_number < 21:
+    if 10< round_number < 21:
             drawDangerUFO()
             
             if ufo_direction=="left" and len(ufo_list)<1:
@@ -578,8 +624,8 @@ def ufoBlock(round_number, ufo_direction, ufo_sound, all_sprite_list, ufo_list):
 
 #drone movement block
 def droneBlock(round_number, drone_direction, drone_sound, all_sprite_list, drone_list):
-    if 25<= round_number < 31:
-            drawDangerDrone()
+    if 25<= round_number < 31 or round_number == 41:
+            drawDangerDrone(round_number)
             
             if drone_direction=="left" and len(drone_list)<1:
                 random_drone=random.randint(1, 50)
@@ -638,11 +684,14 @@ def drawPauseInPause():
     pauseRect.midtop=(WINDOWWIDTH/2, 150)
     DISPLAYSURF.blit(pauseSurf, pauseRect)
 
-def drawCautionWind():
-    scoreSurf = BASICFONT.render('CAUTION: STRONG WIND', True, RED)
-    scoreRect = scoreSurf.get_rect()
-    scoreRect.topleft = (WINDOWWIDTH/2-120, 60)
-    DISPLAYSURF.blit(scoreSurf, scoreRect) 
+def drawCautionWind(round_number):
+    if round_number == 41:
+        pass
+    else:
+        scoreSurf = BASICFONT.render('CAUTION: STRONG WIND', True, RED)
+        scoreRect = scoreSurf.get_rect()
+        scoreRect.topleft = (WINDOWWIDTH/2-120, 60)
+        DISPLAYSURF.blit(scoreSurf, scoreRect)
     
 def drawDangerUFO():
     scoreSurf = BASICFONT.render('DANGER:UFO in the airspace', True, RED)
@@ -650,22 +699,32 @@ def drawDangerUFO():
     scoreRect.topleft = (WINDOWWIDTH/2-130, 75)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
     
-def drawDangerDrone():
-    scoreSurf1 = SMALLFONT.render("01100100 01100001 01101110 01100111 01100101 01110010"  , True, RED)
-    scoreSurf2= SMALLFONT.render("01100100 01110010 01101111 01101110 01100101", True, RED)
-    scoreRect1 = scoreSurf1.get_rect()
-    scoreRect2 = scoreSurf2.get_rect()
-    scoreRect1.topleft = (WINDOWWIDTH/2-185, 65)
-    scoreRect2.topleft = (WINDOWWIDTH/2-150, 80)
-    DISPLAYSURF.blit(scoreSurf1, scoreRect1)  
-    DISPLAYSURF.blit(scoreSurf2, scoreRect2) 
+def drawDangerDrone(round_number):
+    if round_number == 41:
+        pass
+    else:
+        scoreSurf1 = SMALLFONT.render("01100100 01100001 01101110 01100111 01100101 01110010"  , True, RED)
+        scoreSurf2= SMALLFONT.render("01100100 01110010 01101111 01101110 01100101", True, RED)
+        scoreRect1 = scoreSurf1.get_rect()
+        scoreRect2 = scoreSurf2.get_rect()
+        scoreRect1.topleft = (WINDOWWIDTH/2-185, 65)
+        scoreRect2.topleft = (WINDOWWIDTH/2-150, 80)
+        DISPLAYSURF.blit(scoreSurf1, scoreRect1)
+        DISPLAYSURF.blit(scoreSurf2, scoreRect2)
     
 def drawMoveToShot():
     scoreSurf = BASICFONT.render('YOU HAVE TO BE MOVING TO SHOOT!!', True, RED)
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH/2-170, 60)
-    DISPLAYSURF.blit(scoreSurf, scoreRect)    
- 
+    DISPLAYSURF.blit(scoreSurf, scoreRect)
+
+def BewareTentacula(round_number):
+    scoreSurf = BASICFONT.render('BEWARE OF TENTACULA!!!', True, BLACK)
+    scoreRect = scoreSurf.get_rect()
+    scoreRect.topleft = (WINDOWWIDTH / 2 - 125, 70)
+    DISPLAYSURF.blit(scoreSurf, scoreRect)
+
+
 def drawTotalScore(total_score, round_number):
     if round_number <10 or round_number >20:
         scoreSurf = BASICFONT.render('Total Score: %s' % (total_score), True, BLACK)
