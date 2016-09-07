@@ -126,7 +126,7 @@ class Wind(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.wind_direction=wind_direction
      def update(self):
-        #this makes the wind goes left
+        #this makes the wind goes left, also it is the wind velocity
         self.rect.x = self.rect.x + self.wind_direction
      def change_direction(self):
         self.image=pygame.image.load(path.join(img_dir, "wind_right.png")).convert()

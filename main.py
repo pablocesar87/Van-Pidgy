@@ -68,6 +68,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
     soul_list=pygame.sprite.Group()
     bullet_list=pygame.sprite.Group()
     drone_list=pygame.sprite.Group()
+    wind_list=pygame.sprite.Group()
     
     #Shit counter and score
     number_of_shits=15+remaining_shits
@@ -222,7 +223,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
         
     #Music of the game    
     pygame.mixer.music.load(path.join(sound_folder, "main_game.ogg"))
-    pygame.mixer.music.play(loops=100)
+    pygame.mixer.music.play(-1)
 
     while True:
     #Main event loop
@@ -366,8 +367,9 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
                     shit_list.remove(shit)
                     all_sprite_list.remove(shit)
                     if vampire_boss.get_life()==0:
-                        drone.kill()
-                        direction_y, direction_x=0, 0
+                        showWinScreen(score, total_score)
+                        pygame.time.delay(5000)
+                        quit()
             if shit.rect.y > 500:
                 shit_list.remove(shit)
                 all_sprite_list.remove(shit)
@@ -478,7 +480,7 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 
 #Game Over/Win block 
           
-        if pidgeon.rect.y >= 360:
+        if pidgeon.rect.y == 360:
             #change the pidgeon image to electrocuted
             pidgeon.electrocute()
             
@@ -489,11 +491,11 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
             #change the pidgeon image to bumped in the left
             pidgeon.bumpLeft()
             
-        elif pidgeon.rect.x ==699:
+        elif pidgeon.rect.x == 699:
             #change the pidgeon image to bumped in the right
             pidgeon.bumpRight()
             
-        elif pidgeon.rect.y >360:
+        elif pidgeon.rect.y >= 360:
             round_number=1
             pygame.mixer.music.stop()
             electrocute.play()
@@ -574,27 +576,27 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
 
 #Wind movement block method  
 def windBlock(round_number, wind_direction, wind_sound, all_sprite_list,wind_direction_left,wind_direction_right):
-    if 5<= round_number <=10 or 15<=round_number<=20 or 36<=round_number<=40 or round_number == 41:
-            drawCautionWind(round_number)
-            if wind_direction=="left":
-                DISPLAYSURF.blit(wind_direction_left, [0,0])
-                random_wind=random.randint(1, 100)
-                if random_wind==50:
-                    wind_sound.play()
-                    wind=Wind(-5)
-                    wind.rect.x=700
-                    wind.rect.y=random.randint(0,100)
-                    all_sprite_list.add(wind)               
-            elif wind_direction == "right":
-                DISPLAYSURF.blit(wind_direction_right, [0,0])
-                random_wind=random.randint(1,100)
-                if random_wind==50:
-                    wind_sound.play()
-                    wind=Wind(5)
-                    wind.change_direction()
-                    wind.rect.x=-200
-                    wind.rect.y=random.randint(0,100)-60
-                    all_sprite_list.add(wind)
+    if 5 <= round_number <= 10 or 15 <= round_number <= 20 or 36 <= round_number <= 40 or round_number == 41:
+        drawCautionWind(round_number)
+        if wind_direction == "left":
+            DISPLAYSURF.blit(wind_direction_left, [0, 0])
+            random_wind = random.randint(1, 100)
+            if random_wind == 50:
+                wind_sound.play()
+                wind = Wind(-5)
+                wind.rect.x = 700
+                wind.rect.y = random.randint(0, 100)
+                all_sprite_list.add(wind)
+        elif wind_direction == "right":
+            DISPLAYSURF.blit(wind_direction_right, [0, 0])
+            random_wind = random.randint(1, 100)
+            if random_wind == 50:
+                wind_sound.play()
+                wind = Wind(5)
+                wind.change_direction()
+                wind.rect.x = -200
+                wind.rect.y = random.randint(0, 100) - 60
+                all_sprite_list.add(wind)
 
 #UFO movement block
 def ufoBlock(round_number, ufo_direction, ufo_sound, all_sprite_list, ufo_list):
