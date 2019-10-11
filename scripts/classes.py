@@ -16,7 +16,8 @@ class Vampire(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
     def get_points(self):
         return self.points
-        
+
+
 class Vampire_gun(pygame.sprite.Sprite):
     #this class represents the vampires
     def __init__(self,vampire_direction):
@@ -159,10 +160,3 @@ class Drone(pygame.sprite.Sprite):
     def change_direction(self):
         self.image=pygame.image.load(path.join(img_dir, "drone_right.png")).convert()
         self.image.set_colorkey((255,255,255))
-    
-    
-    
-    
-    
-    
-    

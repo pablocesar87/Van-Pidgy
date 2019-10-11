@@ -176,9 +176,6 @@ def runGame(number_of_vampires=5, vampire_velocity=1, velocity=3, total_score=0,
             if checkForKeyPress():
                 break
 
-   
-    
-    
 #Creation of the protagonist(pidgeon) and its atributtes
     pidgeon=Pidgeon()
     all_sprite_list.add(pidgeon)
