@@ -1,64 +1,66 @@
-# by Timothy Downs, inputbox written for my map editor
-
-# This program needs a little cleaning up
-# It ignores the shift key
-# And, for reasons of my own, this program converts "-" to "_"
-
-# A program to get user input, allowing backspace etc
-# shown in a box in the middle of the screen
-# Called by:
-# import inputbox
-# answer = inputbox.ask(screen, "Your name")
-#
-# Only near the center of the screen is blitted to
-
-import pygame, pygame.font, pygame.event, pygame.draw, string
+import pygame
 from pygame.locals import *
+from typing import List
 
-def get_key():
-  while 1:
-    event = pygame.event.poll()
-    if event.type == KEYDOWN:
-      return event.key
-    else:
-      pass
+# Constants
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+BOX_WIDTH = 200
+BOX_HEIGHT = 20
+FONT_SIZE = 18
 
-def display_box(screen, message):
-  "Print a message in a box in the middle of the screen"
-  fontobject = pygame.font.Font(None,18)
-  pygame.draw.rect(screen, (0,0,0),
-                   ((screen.get_width() / 2) - 100,
-                    (screen.get_height() / 2) - 10,
-                    200,20), 0)
-  pygame.draw.rect(screen, (255,255,255),
-                   ((screen.get_width() / 2) - 102,
-                    (screen.get_height() / 2) - 12,
-                    204,24), 1)
-  if len(message) != 0:
-    screen.blit(fontobject.render(message, 1, (255,255,255)),
-                ((screen.get_width() / 2) - 100, (screen.get_height() / 2) - 10))
-  pygame.display.flip()
+def get_key() -> int:
+    """Wait for a key press and return the key."""
+    while True:
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                return event.key
 
-def ask(screen, question):
-  "ask(screen, question) -> answer"
-  pygame.font.init()
-  current_string = []
-  display_box(screen, question + ": " + string.join(current_string,""))
-  while 1:
-    inkey = get_key()
-    if inkey == K_BACKSPACE:
-      current_string = current_string[0:-1]
-    elif inkey == K_RETURN:
-      break
-    elif inkey == K_MINUS:
-      current_string.append("_")
-    elif inkey <= 127:
-      current_string.append(chr(inkey))
-    display_box(screen, question + ": " + string.join(current_string,""))
-  return string.join(current_string,"")
+def display_box(screen: pygame.Surface, message: str) -> None:
+    """Display a message in a box in the middle of the screen."""
+    font = pygame.font.Font(None, FONT_SIZE)
+    screen_width, screen_height = screen.get_size()
+    box_rect = pygame.Rect(
+        (screen_width // 2) - (BOX_WIDTH // 2),
+        (screen_height // 2) - (BOX_HEIGHT // 2),
+        BOX_WIDTH,
+        BOX_HEIGHT
+    )
+    pygame.draw.rect(screen, BLACK, box_rect)
+    pygame.draw.rect(screen, WHITE, box_rect.inflate(4, 4), 1)
+    if message:
+        text_surface = font.render(message, True, WHITE)
+        screen.blit(text_surface, (box_rect.x + 5, box_rect.y + 2))
+    pygame.display.flip()
 
-def main():
-  screen = pygame.display.set_mode((320,240))
-  print ask(screen, "Name") + " was entered"
+def ask(screen: pygame.Surface, question: str) -> str:
+    """Prompt the user with a question and return their input."""
+    pygame.font.init()
+    current_string: List[str] = []
+    display_box(screen, f"{question}: {''.join(current_string)}")
+    while True:
+        inkey = get_key()
+        if inkey == K_BACKSPACE:
+            current_string = current_string[:-1]
+        elif inkey == K_RETURN:
+            break
+        elif inkey == K_MINUS:
+            current_string.append("_")
+        elif 32 <= inkey <= 126:  # Printable ASCII range
+            current_string.append(chr(inkey))
+        display_box(screen, f"{question}: {''.join(current_string)}")
+    return ''.join(current_string)
 
-if __name__ == '__main__': main()
+def main() -> None:
+    """Main function to test the input box."""
+    pygame.init()
+    screen = pygame.display.set_mode((320, 240))
+    pygame.display.set_caption("Input Box Test")
+    try:
+        user_input = ask(screen, "Your name")
+        print(f"{user_input} was entered")
+    finally:
+        pygame.quit()
+
+if __name__ == '__main__':
+    main()
